@@ -1,0 +1,66 @@
+Day 1
+fpga intro - 28 min
+counter verilog code explained - 7 min
+Vivado 
+	counter simulation: 5 min
+	pin mapping - 1 min
+	
+Theory on timing/slack - 2 min
+Vivado
+	Synthesis - 1 min
+	Set constraints, perform implementation, bitstream generation: 4 min
+	Program counter bitstream on fpga, fpga view: 2 min
+
+Total: 52 mins
+----------------------------------------------------------------------------------------
+
+Day 2
+Openfpga intro: 6 min
+explaining xml architecture, VTR intro: 4 min
+vtr flow continued: 2 min
+
+VPR Demo/Lab
+VPR on tseng and Earch: 11min
+(includes explanation of blif, xml)
+
+Explaining xml with GUI, VPR with GUI on tseng +EArch: 5min
+VPR outputs explained, constraints explained: 6 min
+(includes  explanation for.net, .place, .route, .log,  setup/hold timing report, 
+.sdc and pin utilisation report)
+
+Total: 34 min so far
+
+
+
+Demo: VTR flow on Counter + Earch: 10 mins
+(Includes VTR flow, GUI, post synthesis netlist generation, view of the generated netlist, 
+explaining the primitives.v, writing testbench for simulation this post synthesis simulation)
+
+Post synthesis netlist simulation in Vivado: 3 min
+
+
+
+timing and area reports for counter+Earch from VTR: 9 min
+power report: 3 min
+
+Total: 60min 
+----------------------------------------------------------------------------------------
+
+Day 3
+RV Myth- code explain till synthesis:  12 min
+RV Myth: Synthesis till bitstream: 5 min
+
+----------------------------------------------------------------------------------------
+Day 4:
+
+SOFA run on counter, area: 9 min
+SOFA -counter- timing: 5 min
+SOFA counter: post implementation: 7 min
+
+----------------------------------------------------------------------------------------
+Day 5:
+
+SOFA run on RVMyth: 6 min
+SOFA -RVMYth: area, timing: 7 min
+SOFA RVMyth: post implementation netlist: 4 min
+SOFA Rvmyth: post impl simulation: 3 mins
