@@ -1,0 +1,7 @@
+RVMyth core is taken from here:
+https://github.com/shivanishah269/risc-v-core
+
+All the requried verilog modules are combined into one file called mythcore_test_no_ILA.v
+Test bench: test.v
+FPGA version of the code with ILA: mythcore_test_ILA.v
+
