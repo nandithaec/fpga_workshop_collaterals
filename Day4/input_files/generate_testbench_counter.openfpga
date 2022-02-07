@@ -4,23 +4,19 @@
 # including
 #   - Verilog testbenches, used by ModelSim
 #   - SDC for a mapped FPGA fabric, used by Synopsys PrimeTime
-#Changes made to get it to work with RVMyth: Removed --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH} from vpr.
+#
 #--write_rr_graph example_rr_graph.xml  --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH}
 
+#Counter timing
+vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT} --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH} --absorb_buffer_luts off   --sdc_file /home/nanditha/Documents/fpga/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/BENCHMARK/counter_new.sdc 
+ 
 
-#RVMyth- 1st run. Remove the comment from the next line
-#vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT} --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH} --absorb_buffer_luts off
+#Counter post impl simulation netlist
+#vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT} --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH} --absorb_buffer_luts off   --sdc_file /home/nanditha/Documents/fpga/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/BENCHMARK/counter_new.sdc  --gen_post_synthesis_netlist on
 
-# RVMyth timing and post implementation netlist. Remove the comment from the next line
-#vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT}  --absorb_buffer_luts off --sdc_file < >/SOFA/BENCHMARK/rvmyth/mythcore.sdc --gen_post_synthesis_netlist on
+#Counter power
+#vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT} --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH} --absorb_buffer_luts off   --power --activity_file /home/nanditha/Documents/fpga/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/up_counter/MIN_ROUTE_CHAN_WIDTH/up_counter_ace_out.act   --tech_properties /home/nanditha/Documents/fpga/osfpga/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml
 
-
-#RVMyth power: removed the route_channel_width. Remove the comment from the next line
-vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT}  --absorb_buffer_luts off --activity_file < >/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/core/MIN_ROUTE_CHAN_WIDTH/core_ace_out.act   --tech_properties < >/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml 
-
-
-
-#--power --activity_file=core_ace_out.txt   --tech_properties=< >/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml --gen_post_synthesis_netlist on --sdc_file < >/SOFA/BENCHMARK/rvmyth/mythcore.sdc  
 
 # Read OpenFPGA architecture definition
 read_openfpga_arch -f ${OPENFPGA_ARCH_FILE}

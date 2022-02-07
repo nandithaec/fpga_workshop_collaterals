@@ -1,0 +1,325 @@
+--------------------------------------------------------------------------------------------
+
+
+For workshop
+The first step is to download VTR and extract VTR on your local machine.
+Clone git repo:https://github.com/verilog-to-routing/vtr-verilog-to-routing/
+
+make
+
+
+Create $VTR_ROOT which points to where the vtr is downloaded from github
+
+
+-------------------------------------------------------------------------------------------
+
+Run VPR on pre-synthesised tseng circuit on Earch:
+Create blif and then run VPR- using automated flow
+
+--------------------------------------------------------------------------------------------
+
+
+Run VPR on pre-synth circuit on Earch: present in $VTR_ROOT/vtr-verilog-to-routing/vtr_flow/benchmarks/blif/tseng.blif
+So, create a working directory
+Now, lets invoke the VPR tool from this directory to implement:
+
+
+$VTR_ROOT/vpr/vpr \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    $VTR_ROOT/vtr_flow/benchmarks/blif/tseng.blif \
+    --route_chan_width 100
+
+$VTR_ROOT/vpr/vpr \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    $VTR_ROOT/vtr_flow/benchmarks/blif/tseng.blif \
+    --route_chan_width 100 \
+    --analysis --disp on
+
+
+Run without analysis and with disp on
+Interactive way of running
+
+$VTR_ROOT/vpr/vpr \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    $VTR_ROOT/vtr_flow/benchmarks/blif/tseng.blif \
+    --route_chan_width 100 \
+    --disp on
+
+Outputs: .net, .place, .route, .log,  setup/hold timing report, 
+.sdc and pin utilisation report
+
+-----------------------------------------------
+Timing analysis:
+
+timing
+//this itself will run timing, without the need for sdc. it will generate setup and hold report
+
+$VTR_ROOT/vtr_flow/scripts/run_vtr_flow.py \
+    $VTR_ROOT/doc/src/quickstart/counter.v \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    -temp_dir . \
+    --route_chan_width 100 
+
+Create an sdc file whose contents are as follows:
+
+
+sdc contents  
+
+//remove -name in create_clock
+//and replace clk name: Eliminate "^" with "_" in the clock name
+create_clock -period 5 up_counter_clk
+set_input_delay -clock up_counter_clk -max 0 [get_ports {*}]
+set_output_delay -clock up_counter_clk -max 0 [get_ports {*}]
+
+ABC:
+
+$VTR_ROOT/vpr/vpr     $VTR_ROOT/vtr_flow/arch/timing/EArch.xml     < >/osfpga/vtr_work/quickstart/counter_earch/counter.pre-vpr.blif     --route_chan_width 100   --sdc_file < >/osfpga/vtr_github/vtr-verilog-to-routing/doc/src/quickstart/counter.sdc
+
+
+Outputs: timing setup and hold rpt
+
+
+
+
+------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+
+Run entire VTR Flow on Counter and Earch
+Create blif and then run VPR- using automated flow
+
+--------------------------------------------------------------------------------------------
+
+
+Counter:
+$VTR_ROOT/vtr_flow/scripts/run_vtr_flow.py \
+    $VTR_ROOT/doc/src/quickstart/counter.v \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    -temp_dir . \
+    --route_chan_width 100
+
+
+ls *.blif
+
+- To open GUI for above design
+$VTR_ROOT/vpr/vpr \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    counter --circuit_file < >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/core/MIN_ROUTE_CHAN_WIDTH/core_yosys_out.blif \
+    --route_chan_width 100 \
+    --analysis --disp on
+
+
+interactive way with GUI:without --analysis option
+$VTR_ROOT/vpr/vpr \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    counter --circuit_file counter.pre-vpr.blif \
+    --route_chan_width 100 \
+     --disp on
+-----------------------------------------------
+timing analysis
+
+Create an sdc file whose contents are as follows:
+
+create_clock -period 20 -name top^clk
+set_input_delay -clock top^clk -max 0 [get_ports {*}]
+set_output_delay -clock top^clk -max 0 [get_ports {*}]
+
+Run VTR first to generate blif file
+
+$VTR_ROOT/vtr_flow/scripts/run_vtr_flow.py \
+    $VTR_ROOT/doc/src/quickstart/counter.v \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    -temp_dir . \
+    --route_chan_width 100 
+
+//then run VPR passing the sdc
+$VTR_ROOT/vpr/vpr     $VTR_ROOT/vtr_flow/arch/timing/EArch.xml     < >/osfpga/vtr_work/quickstart/counter_earch/counter.pre-vpr.blif     --route_chan_width 100   --sdc_file $VTR_ROOT/doc/src/quickstart/counter.sdc
+
+outputs: hold and setup.rpt
+-----------------------------------------------
+Waveform viewing:
+https://docs.verilogtorouting.org/en/latest/tutorials/timing_simulation/
+
+Post impl netlist timing simulation
+Run VPR: 
+We also need to provide the vpr --gen_post_synthesis_netlist option to generate the post-implementation netlist and dump the timing information in Standard Delay Format (SDF):
+
+$VTR_ROOT/vpr/vpr     $VTR_ROOT/vtr_flow/arch/timing/EArch.xml   counter.pre-vpr.blif --gen_post_synthesis_netlist on
+
+$ ls *.v *.sdf
+The SDF defines all the delays in the circuit using the delays calculated by VPR’s STA engine from the architecture file we provided
+
+
+Perform timing simulation in Vivado
+
+To get it to run with Vivado, modify the primitives.v present in 
+$VTR_ROOT/vtr-verilog-to-routing/vtr_flow
+
+module LUT_K #(
+    parameter K=5, and write the testbench as sv or v (both will work)
+
+-------------------------------------
+power estimation for counter:
+
+VTR will run ODIN->ABC->ACE->VPR. The ACE stage is additional and specific to this power estimation flow. 
+
+$VTR_ROOT/vtr_flow/scripts/run_vtr_flow.py \
+    $VTR_ROOT/doc/src/quickstart/counter.v \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    -power -cmos_tech  < >/osfpga/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml  \
+    -temp_dir . \
+    --route_chan_width 100
+
+Output: Several blif files, .power
+
+OR Directly with VPR
+
+
+$VTR_ROOT/vtr_flow/scripts/run_vtr_flow.py \
+    $VTR_ROOT/doc/src/quickstart/counter.v \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    -temp_dir . \
+    --route_chan_width 100
+
+ls *.blif
+
+OR alternate flow:
+Run ACE first, generate the new blif and activity file
+$VTR_ROOT/ace2/ace -b  < >/osfpga/vtr_work/quickstart/counter_earch/counter.pre-vpr.blif -c up_counter_clk -o counter_activities.act -n counter_new.blif
+
+output: counter_new.blif
+changes to counter_new.blif
+.latch        n22 up_counter_out~0_FF re up_counter_clk 3
+.latch        n27 up_counter_out~3_FF re up_counter_clk 3
+.latch        n32 up_counter_out~2_FF re up_counter_clk 3
+.latch        n37 up_counter_out~1_FF re up_counter_clk 3
+
+Now run:
+$VTR_ROOT/vpr/vpr \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    < >/osfpga/vtr_work/quickstart/counter_earch/counter_new.blif \
+    --route_chan_width 100 \
+     --power --activity_file counter_activities.act --tech_properties $VTR_ROOT/vtr_flow/tech/PTM_45nm/45nm.xml
+
+
+-------------------------------------
+area used for counter: Run the VTR script
+
+$VTR_ROOT/vtr_flow/scripts/run_vtr_flow.py \
+    $VTR_ROOT/doc/src/quickstart/counter.v \
+    $VTR_ROOT/vtr_flow/arch/timing/EArch.xml \
+    -temp_dir . \
+    --route_chan_width 100 
+
+and open the vpr_out.log file to see the resource utilisation
+
+
+---------------------------------------------------------------------------------------
+
+
+/////////////////////////////////SOFA Counter//////////////////////////////
+
+
+https://github.com/os-fpga/open-source-fpga-resource
+
+The Skywater Open-source FPGAs
+SOFA (Skywater Opensource FPGAs) are a series of open-source FPGA IPs using the open-source Skywater 130nm PDK and OpenFPGA framework
+
+SOFA Documentation: 
+https://skywater-openfpga.readthedocs.io/en/latest/
+
+Counter on SOFA
+https://github.com/lnis-uofu/SOFA --> Run your own design
+To bechmark your own design
+Copy your verilog file FPGA1212_QLSOFA_HD_task/BENCHMARK directory and modify FPGA1212_QLSOFA_HD_task/config/task_simulation.conf file.
+
+< >/SOFA/FPGA1212_QLSOFA_HD_PNR
+< >/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task
+
+
+Modify FPGA1212_QLSOFA_HD_task/config/task_simulation.conf file: Line 32 and 35: bench0 and bench_top
+
+
+/////////////////////////
+Commands:
+
+cd FPGA1212_QLSOFA_HD_PNR
+
+# ======== Run example OpenFPGA Task ========
+make runOpenFPGA
+
+# ======== To view the results ========
+cat FPGA1212_QLSOFA_HD_task/latest/task_result.csv
+< >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/up_counter/MIN_ROUTE_CHAN_WIDTH
+
+
+# ======== To view detailed log ========
+cat codeopen FPGA1212_QLSOFA_HD_task/latest/vpr_arch/top/MIN_ROUTE_CHAN_WIDTH/**/openfpgashell.log
+
+
+Other output files:
+< >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/up_counter/MIN_ROUTE_CHAN_WIDTH
+
+Counter timing and power:
+
+timing: 
+check the generate_testbench_openfpga script for vpr commands as listed below:
+
+#Counter timing
+vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT} --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH} --absorb_buffer_luts off   --sdc_file < >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/BENCHMARK/counter_new.sdc 
+
+#Counter power
+#vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT} --route_chan_width ${OPENFPGA_VPR_ROUTE_CHAN_WIDTH} --absorb_buffer_luts off   --power --activity_file < >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/up_counter/MIN_ROUTE_CHAN_WIDTH/up_counter_ace_out.act   --tech_properties < >/osfpga/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml
+
+report setup and hold output files:
+< >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/up_counter/MIN_ROUTE_CHAN_WIDTH
+
+/////////////////////////////SOFA RVMyth///////////////////////////////////////
+
+Use the generate_testbench.openfpga, task_sim.conf and xml files provided. The original files have been modified.
+
+Timing
+Commands changed in generate_testbench.openfpga add the --sdc_file option
+
+vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT}  --absorb_buffer_luts off --sdc_file < >/osfpga/SOFA/BENCHMARK/rvmyth/mythcore.sdc
+
+sdc contents:
+create_clock -period 200 clk
+set_input_delay -clock clk -max 0 [get_ports {*}]
+set_output_delay -clock clk -max 0 [get_ports {*}]
+
+
+Run the makerunOpenFPGA command to see hold and setup reports in < >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/core/MIN_ROUTE_CHAN_WIDTH
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+post layout simulation with passing sdc in generate_testbench.openfpga 
+
+vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT}  --absorb_buffer_luts off --sdc_file < >/osfpga/SOFA/BENCHMARK/rvmyth/mythcore.sdc --gen_post_synthesis_netlist on
+
+$ ls *.v *.sdf
+The SDF defines all the delays in the circuit using the delays calculated by VPR’s STA engine from the architecture file
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+power estimation
+
+VTR will run ODIN->ABC->ACE->VPR. The ACE stage is additional and specific to this power estimation flow. The ACE output (activity file) needs to be passed to VPR
+
+The following command needs to be used in the generate_testbench.openfpga script
+
+vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT}  --absorb_buffer_luts off --sdc_file < >/osfpga/SOFA/BENCHMARK/rvmyth/mythcore.sdc --power --activity_file < >/osfpga/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/core/MIN_ROUTE_CHAN_WIDTH/core_ace_out.txt   --tech_properties < >/osfpga/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml 
+
+Output: Several blif files, .power
+
+---------------------------------------------------------------------------
+RVMyth on Basys3
+Basys3 bitstream version with ILA
+
+Run it for 480us and beyond
+
+Sources: mythcore-test.v (one with ILA, one without ILA)
+testbench: test.v
+Constraints: xdc file
+
+
