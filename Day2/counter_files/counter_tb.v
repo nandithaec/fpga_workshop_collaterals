@@ -22,7 +22,7 @@ wire [3:0] out;
 
 
 //create an instance of the design
-up_counter dut(enable, clk, reset, out[0], out[1], out[2], out[3]);
+up_counter dut(out, enable, clk, reset);
 
 
 initial $sdf_annotate("/home/nanditha/Documents/fpga/osfpga/vtr_work/quickstart/counter_gui_earch/post_synth/up_counter_post_synthesis.sdf", dut);

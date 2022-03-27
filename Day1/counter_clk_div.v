@@ -42,9 +42,9 @@ begin
 if(rst)
 begin
 delay_count<=26'd0;
-counter_out<=4'b0000;
+//counter_out<=4'b0000;
 div_clk <= 1'b0; //initialise div_clk
-counter_out<=4'b0000;
+
 
 //uncomment this line while running just the div clock counter for simulation purpose
 //counter_out<=4'b0000;
