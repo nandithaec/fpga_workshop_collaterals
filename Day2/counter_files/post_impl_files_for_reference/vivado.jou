@@ -1,0 +1,20 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Mon Mar 28 19:44:55 2022
+# Process ID: 18160
+# Current directory: /home/nanditha/Documents/vsd/fpga_workshop_collaterals/Day2/counter_files/post_impl_files_for_reference
+# Command line: vivado
+# Log file: /home/nanditha/Documents/vsd/fpga_workshop_collaterals/Day2/counter_files/post_impl_files_for_reference/vivado.log
+# Journal file: /home/nanditha/Documents/vsd/fpga_workshop_collaterals/Day2/counter_files/post_impl_files_for_reference/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project /home/nanditha/Documents/fpga/osfpga/vivado_run/project_counter/project_counter.xpr
+update_compile_order -fileset sources_1
+close_project
+open_project /home/nanditha/Documents/fpga/osfpga/vivado_run/counter/counter.xpr
+update_compile_order -fileset sources_1
+launch_simulation
+source upcounter_testbench.tcl
+relaunch_sim

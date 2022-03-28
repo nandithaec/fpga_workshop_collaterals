@@ -16,7 +16,7 @@
 
 
 #RVMyth power: removed the route_channel_width. Remove the comment from the next line
-vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT}  --absorb_buffer_luts off --activity_file < >/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/core/MIN_ROUTE_CHAN_WIDTH/core_ace_out.act   --tech_properties < >/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml 
+vpr ${VPR_ARCH_FILE} ${VPR_TESTBENCH_BLIF} --clock_modeling ideal --device ${OPENFPGA_VPR_DEVICE_LAYOUT}  --absorb_buffer_luts off --power --activity_file < >/SOFA/FPGA1212_QLSOFA_HD_PNR/FPGA1212_QLSOFA_HD_task/latest/vpr_arch/core/MIN_ROUTE_CHAN_WIDTH/core_ace_out.act   --tech_properties < >/vtr_github/vtr-verilog-to-routing/vtr_flow/tech/PTM_45nm/45nm.xml 
 
 
 
