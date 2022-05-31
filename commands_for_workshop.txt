@@ -173,6 +173,7 @@ and open the vpr_out.log file to see the resource utilisation
 
 /////////////////////////////////SOFA Counter//////////////////////////////
 
+You will need to do the following on your own. We have not installed SOFA.
 
 https://github.com/os-fpga/open-source-fpga-resource
 
@@ -183,7 +184,10 @@ SOFA Documentation:
 https://skywater-openfpga.readthedocs.io/en/latest/
 
 Counter on SOFA
-https://github.com/lnis-uofu/SOFA --> Run your own design
+
+https://github.com/lnis-uofu/SOFA 
+From here, do a "gh repo clone lnis-uofu/SOFA" or "git clone https://github.com/lnis-uofu/SOFA.git"
+
 To bechmark your own design
 Copy your verilog file FPGA1212_QLSOFA_HD_task/BENCHMARK directory and modify FPGA1212_QLSOFA_HD_task/config/task_simulation.conf file.
 
@@ -195,7 +199,7 @@ Modify FPGA1212_QLSOFA_HD_task/config/task_simulation.conf file: Line 32 and 35:
 
 
 /////////////////////////
-Commands:
+Commands needed for the workshop:
 
 cd FPGA1212_QLSOFA_HD_PNR
 
