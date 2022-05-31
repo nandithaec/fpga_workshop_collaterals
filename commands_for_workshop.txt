@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------------------
+Installation- already done by us
 
-
-For workshop
 The first step is to download VTR and extract VTR on your local machine.
 Clone git repo:https://github.com/verilog-to-routing/vtr-verilog-to-routing/
 
@@ -11,7 +10,11 @@ This has been installed for you already on the cloud machine. You do not need to
 Create $VTR_ROOT which points to where the vtr is downloaded from github
 
 
--------------------------------------------------------------------------------------------
+Day 1:
+Launch AMD-Xilinx Vivado from the terminal on the desktop.
+Type the command "vivado" on the terminal
+
+-----------------------Day 2 VTR commands-------------------------------------------
 
 Run VPR on pre-synthesised tseng circuit on Earch:
 Create blif and then run VPR- using automated flow

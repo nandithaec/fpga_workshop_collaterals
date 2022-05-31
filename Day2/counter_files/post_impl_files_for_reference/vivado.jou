@@ -18,3 +18,4 @@ update_compile_order -fileset sources_1
 launch_simulation
 source upcounter_testbench.tcl
 relaunch_sim
+close_sim
